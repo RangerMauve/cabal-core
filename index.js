@@ -45,10 +45,10 @@ function Cabal (storage, key, opts) {
   }
 
   this.maxFeeds = opts.maxFeeds
-  this.key = key || null
   this.db = opts.db || memdb()
   this.kcore = kappa(storage, {
-    valueEncoding: json
+    valueEncoding: json,
+    key: key
   })
 
   // Create (if needed) and open local write feed
@@ -179,7 +179,11 @@ Cabal.prototype.replicate = function (opts) {
 }
 
 Cabal.prototype.ready = function (cb) {
-  this.kcore.ready(cb)
+  self.kcore.feed('_fake', function (err, fakeFeed) {
+    self.discoveryKey = fakeFeed.discoveryKey
+    this._fake = fakeFeed
+    this.kcore.ready(cb)
+  })
 }
 
 Cabal.prototype._addConnection = function (key) {
@@ -188,6 +192,14 @@ Cabal.prototype._addConnection = function (key) {
 
 Cabal.prototype._removeConnection = function (key) {
   this.emit('peer-dropped', key)
+}
+
+Cabal.peers.peers = function () {
+  var fake = this._fake
+
+  if(!fake) return null
+
+  return fake.peers
 }
 
 function noop () {}
