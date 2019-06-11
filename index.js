@@ -180,10 +180,11 @@ Cabal.prototype.replicate = function (opts) {
 
 Cabal.prototype.ready = function (cb) {
   var self = this
-  self.kcore.feed('_fake', function (err, fakeFeed) {
+  this.kcore.ready(function() {
+    var fakeFeed = self.kcore._logs._fake
+    self._fake = fakeFeed
     self.discoveryKey = fakeFeed.discoveryKey
-    this._fake = fakeFeed
-    this.kcore.ready(cb)
+    cb(self)
   })
 }
 
