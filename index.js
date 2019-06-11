@@ -179,11 +179,20 @@ Cabal.prototype.replicate = function (opts) {
 }
 
 Cabal.prototype.ready = function (cb) {
+  var self = this
   self.kcore.feed('_fake', function (err, fakeFeed) {
     self.discoveryKey = fakeFeed.discoveryKey
     this._fake = fakeFeed
     this.kcore.ready(cb)
   })
+}
+
+Cabal.prototype.peers = function () {
+  var fake = this._fake
+
+  if (!fake) return null
+
+  return fake.peers
 }
 
 Cabal.prototype._addConnection = function (key) {
@@ -192,14 +201,6 @@ Cabal.prototype._addConnection = function (key) {
 
 Cabal.prototype._removeConnection = function (key) {
   this.emit('peer-dropped', key)
-}
-
-Cabal.peers.peers = function () {
-  var fake = this._fake
-
-  if(!fake) return null
-
-  return fake.peers
 }
 
 function noop () {}

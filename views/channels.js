@@ -69,7 +69,7 @@ module.exports = function (lvl) {
         else if (err) cb(err)
         else cb(null, Buffer.from(state, 'base64'))
       })
-    },
+    }
   }
 }
 

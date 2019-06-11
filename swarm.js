@@ -1,6 +1,5 @@
 var pump = require('pump')
-var discovery = require('discovery-swarm')
-var swarmDefaults = require('dat-swarm-defaults')
+var discovery = require('hyperdiscovery')
 
 module.exports = function (cabal, cb) {
   cb = cb || function () {}
@@ -8,12 +7,12 @@ module.exports = function (cabal, cb) {
   cabal.getLocalKey(function (err, key) {
     if (err) return cb(err)
 
-    var swarm = discovery(Object.assign({}, swarmDefaults(), { id: Buffer.from(key, 'hex') }))
-    swarm.join(cabal.key.toString('hex'))
+    var swarm = discovery(cabal, { id: Buffer.from(key, 'hex') })
+
     swarm.on('connection', function (conn, info) {
       var remoteKey = info.id.toString('hex')
       conn.once('error', function () { if (remoteKey) cabal._removeConnection(remoteKey) })
-      conn.once('end',   function () { if (remoteKey) cabal._removeConnection(remoteKey) })
+      conn.once('end', function () { if (remoteKey) cabal._removeConnection(remoteKey) })
 
       var r = cabal.replicate()
       pump(conn, r, conn, function (err) {
@@ -26,4 +25,3 @@ module.exports = function (cabal, cb) {
     cb(null, swarm)
   })
 }
-

@@ -56,13 +56,13 @@ module.exports = function (lvl) {
 
         var t = through.obj()
 
-        if (opts.gt) opts.gt = 'msg!' + channel + '!' + charwise.encode(opts.gt)  + '!'
+        if (opts.gt) opts.gt = 'msg!' + channel + '!' + charwise.encode(opts.gt) + '!'
         else opts.gt = 'msg!' + channel + '!'
-        if (opts.lt) opts.lt = 'msg!' + channel + '!' + charwise.encode(opts.lt)  + '~'
+        if (opts.lt) opts.lt = 'msg!' + channel + '!' + charwise.encode(opts.lt) + '~'
         else opts.lt = 'msg!' + channel + '~'
 
         this.ready(function () {
-          var v = lvl.createValueStream(xtend({reverse: true}, opts))
+          var v = lvl.createValueStream(xtend({ reverse: true }, opts))
           v.pipe(t)
         })
 

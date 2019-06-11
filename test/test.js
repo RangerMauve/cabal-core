@@ -235,8 +235,8 @@ test('swarm network replication', function (t) {
 })
 
 function sync (a, b, cb) {
-  var r = a.replicate({live:false})
-  pump(r, b.replicate({live:false}), r, cb)
+  var r = a.replicate({ live: false })
+  pump(r, b.replicate({ live: false }), r, cb)
 }
 
 function syncNetwork (a, b, cb) {
